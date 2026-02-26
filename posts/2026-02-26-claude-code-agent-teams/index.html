@@ -156,9 +156,47 @@
       margin: 3em 0;
     }
 
+    .article-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.6em 0;
+      font-size: 0.92em;
+      line-height: 1.6;
+    }
+
+    .article-body thead {
+      border-bottom: 2px solid var(--border);
+    }
+
+    .article-body th {
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.82em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .article-body td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .article-body tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .article-body tbody tr:hover {
+      background: var(--bg-subtle);
+    }
+
     .article-body img {
       max-width: 100%;
       border: 1px solid var(--border);
+      border-radius: 2px;
+      margin: 1.2em 0;
     }
   </style>
 </head>
@@ -181,9 +219,11 @@
 <p>原文：<a href="https://code.claude.com/docs/en/agent-teams">Orchestrate teams of Claude Code sessions</a></p>
 </blockquote>
 <h2>什么是 Agent Teams</h2>
-<p>Agent Teams 是 Claude Code 的实验性功能，允许协调多个 Claude Code 实例作为一个团队协同工作。一个 session 担任 <strong>team lead</strong>，负责协调工作、分配任务、汇总结果；其余 <strong>teammates</strong> 各自独立运行，拥有自己的 context window，并可以直接互相通信。</p>
+<p>Agent Teams 是 Claude Code 的一项实验性功能，允许多个 Claude Code 实例作为一个团队协同工作。</p>
+<p>其中一个 session 担任 <strong>team lead</strong>，负责协调工作、分配任务、汇总结果；其余 <strong>teammates</strong> 各自独立运行，拥有自己的 context window，并可以直接互相通信。</p>
+<p>与 subagents 不同的是，你可以直接和任意一个 teammate 对话，而不必经过 lead 中转。</p>
 <blockquote>
-<p><strong>注意</strong>：Agent Teams 默认关闭，需要在 <code>settings.json</code> 或环境变量中启用 <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code>。</p>
+<p>Agent Teams 默认关闭，需要在 <code>settings.json</code> 或环境变量中启用：</p>
 </blockquote>
 <pre><code class="language-json">{
   &quot;env&quot;: {
@@ -191,76 +231,75 @@
   }
 }
 </code></pre>
-<h2>与 Subagents 的区别</h2>
-<p>这是理解 Agent Teams 的关键。两者都能并行化工作，但通信模型不同：</p>
+<h2>Subagents vs Agent Teams</h2>
+<p>这是理解 Agent Teams 的关键。两者都能并行化工作，但通信模型完全不同。</p>
 <table>
 <thead>
 <tr>
-<th></th>
+<th>维度</th>
 <th>Subagents</th>
 <th>Agent Teams</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Context</strong></td>
+<td>Context</td>
 <td>独立 context，结果返回给调用方</td>
 <td>独立 context，完全自治</td>
 </tr>
 <tr>
-<td><strong>通信</strong></td>
+<td>通信</td>
 <td>只向主 agent 汇报结果</td>
-<td>Teammates 可直接互相发消息</td>
+<td>Teammates 直接互相发消息</td>
 </tr>
 <tr>
-<td><strong>协调</strong></td>
+<td>协调</td>
 <td>主 agent 管理所有工作</td>
 <td>共享任务列表，自我协调</td>
 </tr>
 <tr>
-<td><strong>适合场景</strong></td>
+<td>适合场景</td>
 <td>只关心结果的专注任务</td>
 <td>需要讨论和协作的复杂工作</td>
 </tr>
 <tr>
-<td><strong>Token 消耗</strong></td>
+<td>Token 消耗</td>
 <td>较低：结果汇总后返回</td>
 <td>较高：每个 teammate 是独立实例</td>
 </tr>
 </tbody></table>
 <p><img src="https://mintcdn.com/claude-code/nsvRFSDNfpSU5nT7/images/subagents-vs-agent-teams-light.png?w=1100&fit=max&auto=format&n=nsvRFSDNfpSU5nT7&q=85&s=923986caa23c0ef2c27d7e45f4dce6d1" alt="Subagents vs Agent Teams 架构对比"></p>
-<p>简单说：<strong>Subagents 只汇报，Teammates 会讨论</strong>。</p>
+<p>一句话总结：<strong>Subagents 只汇报，Teammates 会讨论</strong>。</p>
+<p>选择依据也很简单——如果 worker 之间需要互相通信，用 Agent Teams；如果只需要拿到结果，用 Subagents。</p>
 <h2>最适合的场景</h2>
 <p>Agent Teams 在以下场景中价值最大：</p>
 <ul>
-<li><strong>研究与评审</strong>：多个 teammate 同时调查问题的不同方面，互相挑战对方的发现</li>
-<li><strong>新模块/功能开发</strong>：每个 teammate 负责独立的一块，互不干扰</li>
-<li><strong>竞争假设调试</strong>：多个 teammate 并行测试不同理论，更快收敛到答案</li>
-<li><strong>跨层协调</strong>：前端、后端、测试分别由不同 teammate 负责</li>
+<li><strong>研究与评审</strong> — 多个 teammate 同时调查问题的不同方面，互相挑战对方的发现</li>
+<li><strong>新模块/功能开发</strong> — 每个 teammate 负责独立的一块，互不干扰</li>
+<li><strong>竞争假设调试</strong> — 多个 teammate 并行测试不同理论，更快收敛到答案</li>
+<li><strong>跨层协调</strong> — 前端、后端、测试分别由不同 teammate 负责</li>
 </ul>
-<p>反之，对于顺序任务、同文件编辑、依赖关系复杂的工作，单 session 或 subagents 更合适。</p>
-<h2>启动第一个 Agent Team</h2>
+<p>反之，对于顺序任务、同文件编辑、依赖关系复杂的工作，单 session 或 subagents 更合适。Agent Teams 会带来额外的协调开销和显著更高的 token 消耗。</p>
+<h2>快速上手</h2>
 <p>启用功能后，用自然语言告诉 Claude 创建团队即可：</p>
 <pre><code>I&#39;m designing a CLI tool that helps developers track TODO comments across
-their codebase. Create an agent team to explore this from different angles: one
-teammate on UX, one on technical architecture, one playing devil&#39;s advocate.
+their codebase. Create an agent team to explore this from different angles:
+one teammate on UX, one on technical architecture, one playing devil&#39;s advocate.
 </code></pre>
 <p>Claude 会自动创建团队、生成共享任务列表、为每个角色 spawn teammate，完成后尝试清理团队资源。</p>
-<p>Lead 的终端会列出所有 teammate 及其当前工作。按 <strong>Shift+Down</strong> 可以循环切换到各个 teammate 并直接发消息。</p>
+<p>Lead 的终端会列出所有 teammate 及其当前工作。按 <code>Shift+Down</code> 可以循环切换到各个 teammate 并直接发消息。</p>
 <h2>控制团队</h2>
 <h3>显示模式</h3>
-<p>两种模式：</p>
+<p>两种模式可选：</p>
 <ul>
-<li><strong>In-process</strong>：所有 teammate 在主终端内运行，Shift+Down 切换，任何终端都支持</li>
-<li><strong>Split panes</strong>：每个 teammate 独占一个分屏，需要 tmux 或 iTerm2</li>
+<li><strong>In-process</strong> — 所有 teammate 在主终端内运行，<code>Shift+Down</code> 切换，任何终端都支持</li>
+<li><strong>Split panes</strong> — 每个 teammate 独占一个分屏，需要 tmux 或 iTerm2</li>
 </ul>
 <p>默认 <code>&quot;auto&quot;</code>：已在 tmux 中则用分屏，否则用 in-process。可在 <code>settings.json</code> 覆盖：</p>
 <pre><code class="language-json">{
   &quot;teammateMode&quot;: &quot;in-process&quot;
 }
 </code></pre>
-<p>或单次会话传参：</p>
-<pre><code class="language-bash">claude --teammate-mode in-process
-</code></pre>
+<p>或单次会话传参：<code>claude --teammate-mode in-process</code></p>
 <h3>指定 Teammate 数量和模型</h3>
 <pre><code>Create a team with 4 teammates to refactor these modules in parallel.
 Use Sonnet for each teammate.
@@ -270,28 +309,53 @@ Use Sonnet for each teammate.
 <pre><code>Spawn an architect teammate to refactor the authentication module.
 Require plan approval before they make any changes.
 </code></pre>
-<p>Teammate 完成规划后向 lead 发送审批请求，lead 审核后决定批准或拒绝（附反馈）。</p>
-<h3>任务分配机制</h3>
-<p>共享任务列表有三种状态：pending、in progress、completed，支持任务依赖。</p>
+<p>Teammate 完成规划后向 lead 发送审批请求。Lead 审核后决定批准或拒绝（附反馈）。被拒绝的 teammate 会留在 plan mode 中修改方案并重新提交。</p>
+<p>你可以通过 prompt 影响 lead 的审批标准，比如 &quot;only approve plans that include test coverage&quot; 或 &quot;reject plans that modify the database schema&quot;。</p>
+<h3>任务分配</h3>
+<p>共享任务列表有三种状态：<code>pending</code> → <code>in progress</code> → <code>completed</code>，支持任务依赖。</p>
 <ul>
 <li><strong>Lead 指派</strong>：明确告诉 lead 把哪个任务分给哪个 teammate</li>
 <li><strong>自主认领</strong>：teammate 完成当前任务后，自动认领下一个未分配的可用任务</li>
 </ul>
-<p>任务认领使用文件锁防止竞争条件。</p>
-<h3>关闭 Teammate</h3>
+<p>任务认领使用文件锁防止竞争条件。当一个任务完成后，依赖它的任务会自动解除阻塞。</p>
+<h3>与 Teammate 直接对话</h3>
+<p>每个 teammate 都是完整的、独立的 Claude Code session。你可以直接给任何 teammate 发消息，补充指令、追问、或调整方向。</p>
+<ul>
+<li><strong>In-process 模式</strong>：<code>Shift+Down</code> 切换到目标 teammate，输入消息。<code>Enter</code> 查看 session，<code>Escape</code> 中断当前 turn，<code>Ctrl+T</code> 切换任务列表。</li>
+<li><strong>Split panes 模式</strong>：直接点击对应的 pane。</li>
+</ul>
+<h3>关闭与清理</h3>
+<p>关闭单个 teammate：</p>
 <pre><code>Ask the researcher teammate to shut down
 </code></pre>
-<p>Lead 发送关闭请求，teammate 可以批准（优雅退出）或拒绝（附说明）。</p>
-<h3>清理团队</h3>
+<p>清理整个团队：</p>
 <pre><code>Clean up the team
 </code></pre>
-<p><strong>注意</strong>：必须由 lead 执行清理，不要让 teammate 执行，否则可能导致资源状态不一致。</p>
-<h3>用 Hooks 强制质量门控</h3>
-<ul>
-<li><code>TeammateIdle</code>：teammate 即将空闲时触发，exit code 2 可发送反馈让其继续工作</li>
-<li><code>TaskCompleted</code>：任务即将标记完成时触发，exit code 2 可阻止完成并发送反馈</li>
-</ul>
-<h2>架构细节</h2>
+<blockquote>
+<p>必须由 lead 执行清理。Teammate 执行清理可能导致资源状态不一致。清理前需要先关闭所有 teammate。</p>
+</blockquote>
+<h3>Hooks 质量门控</h3>
+<p>可以用 hooks 在关键节点强制执行规则：</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>触发时机</th>
+<th>exit code 2 的效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TeammateIdle</code></td>
+<td>Teammate 即将空闲</td>
+<td>发送反馈，让其继续工作</td>
+</tr>
+<tr>
+<td><code>TaskCompleted</code></td>
+<td>任务即将标记完成</td>
+<td>阻止完成，发送反馈</td>
+</tr>
+</tbody></table>
+<h2>架构</h2>
 <table>
 <thead>
 <tr>
@@ -321,10 +385,11 @@ Require plan approval before they make any changes.
 <li>团队配置：<code>~/.claude/teams/{team-name}/config.json</code></li>
 <li>任务列表：<code>~/.claude/tasks/{team-name}/</code></li>
 </ul>
-<p><strong>权限</strong>：Teammates 继承 lead 的权限设置。如果 lead 用 <code>--dangerously-skip-permissions</code> 启动，所有 teammate 也会如此。</p>
+<p><strong>权限</strong>：Teammates 继承 lead 的权限设置。Spawn 后可以单独修改某个 teammate 的权限，但不能在 spawn 时指定。</p>
 <p><strong>Context 传递</strong>：Teammate spawn 时加载项目的 CLAUDE.md、MCP servers 和 skills，但<strong>不继承 lead 的对话历史</strong>。任务相关的上下文需要在 spawn prompt 中明确提供。</p>
 <h2>实战案例</h2>
 <h3>并行代码评审</h3>
+<p>单个 reviewer 容易一次只关注一类问题。把审查维度拆分成独立的领域，安全、性能、测试覆盖率就能同时得到充分关注：</p>
 <pre><code>Create an agent team to review PR #142. Spawn three reviewers:
 - One focused on security implications
 - One checking performance impact
@@ -333,37 +398,44 @@ Have them each review and report findings.
 </code></pre>
 <p>三个 reviewer 从同一 PR 出发，各自应用不同的审查视角，lead 最后汇总所有发现。</p>
 <h3>竞争假设调试</h3>
+<p>当根因不明确时，单个 agent 容易找到一个看似合理的解释就停下来。这个 prompt 通过让 teammate 互相对抗来对抗这种锚定效应：</p>
 <pre><code>Users report the app exits after one message instead of staying connected.
-Spawn 5 agent teammates to investigate different hypotheses. Have them talk to
-each other to try to disprove each other&#39;s theories, like a scientific
+Spawn 5 agent teammates to investigate different hypotheses. Have them talk
+to each other to try to disprove each other&#39;s theories, like a scientific
 debate. Update the findings doc with whatever consensus emerges.
 </code></pre>
-<p>这个模式的关键在于<strong>对抗结构</strong>：每个 teammate 不仅调查自己的理论，还要主动挑战其他人的理论。能在这种&quot;科学辩论&quot;中存活下来的理论，才更可能是真正的根因。</p>
+<p>关键在于<strong>对抗结构</strong>：每个 teammate 不仅调查自己的理论，还要主动挑战其他人的理论。能在这种&quot;科学辩论&quot;中存活下来的理论，才更可能是真正的根因。</p>
 <h2>最佳实践</h2>
-<p><strong>给 teammate 足够的上下文</strong>：由于不继承 lead 的对话历史，spawn prompt 中要包含任务相关的所有细节。</p>
-<p><strong>合理控制团队规模</strong>：建议从 3-5 个 teammate 开始。每个 teammate 5-6 个任务是比较合适的负载。Token 消耗随 teammate 数量线性增长。</p>
-<p><strong>任务粒度要合适</strong>：</p>
-<ul>
-<li>太小：协调开销超过收益</li>
-<li>太大：长时间无 check-in，浪费风险高</li>
-<li>刚好：能产出明确交付物的自包含单元（一个函数、一个测试文件、一份评审）</li>
-</ul>
-<p><strong>避免文件冲突</strong>：两个 teammate 编辑同一文件会导致覆盖，拆分工作时确保每个 teammate 负责不同的文件集。</p>
-<p><strong>主动监控和引导</strong>：不要让团队长时间无人看管，及时检查进度、重定向不奏效的方向。</p>
+<p><strong>给 teammate 足够的上下文</strong>。由于不继承 lead 的对话历史，spawn prompt 中要包含任务相关的所有细节。比如：</p>
+<pre><code>Spawn a security reviewer teammate with the prompt: &quot;Review the authentication
+module at src/auth/ for security vulnerabilities. Focus on token handling,
+session management, and input validation. The app uses JWT tokens stored in
+httpOnly cookies. Report any issues with severity ratings.&quot;
+</code></pre>
+<p><strong>合理控制团队规模</strong>。建议从 3–5 个 teammate 开始，每个 teammate 分配 5–6 个任务。Token 消耗随 teammate 数量线性增长，超过一定数量后收益递减。三个专注的 teammate 往往比五个分散的更有效。</p>
+<p><strong>任务粒度要合适</strong>。太小则协调开销超过收益，太大则长时间无 check-in、浪费风险高。理想的粒度是能产出明确交付物的自包含单元——一个函数、一个测试文件、一份评审。</p>
+<p><strong>避免文件冲突</strong>。两个 teammate 编辑同一文件会导致覆盖。拆分工作时确保每个 teammate 负责不同的文件集。</p>
+<p><strong>主动监控和引导</strong>。不要让团队长时间无人看管，及时检查进度、重定向不奏效的方向。</p>
+<p><strong>从研究和评审开始</strong>。如果你刚接触 Agent Teams，先从不需要写代码的任务入手——评审 PR、调研库、排查 bug。这些任务能展示并行探索的价值，又不会遇到并行实现带来的协调难题。</p>
 <h2>当前限制</h2>
-<p>Agent Teams 仍是实验性功能，已知限制：</p>
+<p>Agent Teams 仍是实验性功能，已知限制包括：</p>
 <ul>
 <li><strong>不支持 session 恢复</strong>：<code>/resume</code> 和 <code>/rewind</code> 不会恢复 in-process teammates</li>
 <li><strong>任务状态可能滞后</strong>：teammate 有时未能标记任务完成，导致依赖任务被阻塞</li>
 <li><strong>关闭可能较慢</strong>：teammate 会等当前请求或工具调用完成后才关闭</li>
-<li><strong>每个 session 只能管理一个团队</strong></li>
+<li><strong>每个 session 只能管理一个团队</strong>，清理后才能创建新团队</li>
 <li><strong>不支持嵌套团队</strong>：teammate 不能 spawn 自己的团队</li>
 <li><strong>Lead 固定</strong>：创建团队的 session 就是 lead，不能转让</li>
 <li><strong>Split panes 需要 tmux 或 iTerm2</strong>：不支持 VS Code 集成终端、Windows Terminal、Ghostty</li>
 </ul>
 <h2>总结</h2>
-<p>Agent Teams 的核心价值在于<strong>让 AI 实例之间能够真正对话和协作</strong>，而不只是各自汇报结果。这在需要多视角探索、竞争假设验证、跨层并行开发的场景下，能显著提升效率和结果质量。</p>
+<p>Agent Teams 的核心价值在于<strong>让 AI 实例之间能够真正对话和协作</strong>，而不只是各自汇报结果。在需要多视角探索、竞争假设验证、跨层并行开发的场景下，它能显著提升效率和结果质量。</p>
 <p>代价是更高的 token 消耗和协调开销。对于日常的顺序任务，单 session 仍然是更经济的选择。</p>
+<p>如果你想进一步了解相关的并行工作方式，可以参考：</p>
+<ul>
+<li><a href="https://code.claude.com/docs/en/sub-agents">Subagents</a> — 轻量级委派，适合不需要 agent 间协调的任务</li>
+<li><a href="https://code.claude.com/docs/en/common-workflows#run-parallel-claude-code-sessions-with-git-worktrees">Git worktrees</a> — 手动并行多个 Claude Code session，无自动化团队协调</li>
+</ul>
 
   </article>
 
