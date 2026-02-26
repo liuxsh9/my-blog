@@ -86,12 +86,12 @@ function indexTemplate(posts) {
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0F0F0F;
-      --bg-subtle: #161616;
-      --text-primary: #E8E4DC;
-      --text-secondary: #6B6560;
-      --accent: #C9A96E;
-      --border: #1E1E1E;
+      --bg: #FAF7F2;
+      --bg-subtle: #F0EBE3;
+      --text-primary: #1A1614;
+      --text-secondary: #8A7F78;
+      --accent: #B5813A;
+      --border: #E8E2D9;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -312,12 +312,12 @@ function postTemplate({ title, date, category, content, slug }) {
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0F0F0F;
-      --bg-subtle: #161616;
-      --text-primary: #E8E4DC;
-      --text-secondary: #6B6560;
-      --accent: #C9A96E;
-      --border: #1E1E1E;
+      --bg: #FAF7F2;
+      --bg-subtle: #F0EBE3;
+      --text-primary: #1A1614;
+      --text-secondary: #8A7F78;
+      --accent: #B5813A;
+      --border: #E8E2D9;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -439,7 +439,7 @@ function postTemplate({ title, date, category, content, slug }) {
     .article-body code {
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
       font-size: 0.88em;
-      color: #A8B5A2;
+      color: #5C4A2A;
     }
 
     .article-body pre code {
