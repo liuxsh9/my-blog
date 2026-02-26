@@ -460,9 +460,47 @@ function postTemplate({ title, date, category, content, slug }) {
       margin: 3em 0;
     }
 
+    .article-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.6em 0;
+      font-size: 0.92em;
+      line-height: 1.6;
+    }
+
+    .article-body thead {
+      border-bottom: 2px solid var(--border);
+    }
+
+    .article-body th {
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.82em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .article-body td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .article-body tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .article-body tbody tr:hover {
+      background: var(--bg-subtle);
+    }
+
     .article-body img {
       max-width: 100%;
       border: 1px solid var(--border);
+      border-radius: 2px;
+      margin: 1.2em 0;
     }
   </style>
 </head>
