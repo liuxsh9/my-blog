@@ -76,22 +76,24 @@ push 后 GitHub Actions 自动构建并部署，无需手动操作。
 
 ---
 
-## 设计规范：Editorial Dark
+## 设计规范：Editorial Light
 
 **所有生成的 HTML 内容必须严格遵守以下设计语言。**
 
 ### 色彩系统
 
 ```
-背景色:        #0F0F0F  （近黑，非纯黑）
-主文字:        #E8E4DC  （暖白）
-次文字/描述:   #6B6560  （低对比度，突出层级）
-强调色:        #C9A96E  （哑光金，唯一暖色点缀）
-边框:          #1E1E1E  （极细，几乎融入背景）
-代码块背景:    #161616
+背景色:        #FAF7F2  （暖奶油，非纯白）
+次级背景:      #F0EBE3  （代码块、微弱区分）
+主文字:        #1A1614  （深暖棕，非纯黑）
+次文字/描述:   #8A7F78  （低对比度，突出层级）
+强调色:        #B5813A  （深哑光金，唯一暖色点缀）
+边框:          #E8E2D9  （极细暖灰）
+代码文字:      #5C4A2A  （深棕，可读）
 ```
 
 **禁止**使用系统蓝色（如 `#3B82F6`、Tailwind `blue-500`）作为主色调。
+**禁止**使用纯白 `#FFFFFF` 背景。
 
 ### 字体排印
 
@@ -119,7 +121,7 @@ Google Fonts 引入方式：
 ### 区域划分
 
 - **禁止**：纯白背景 + 深色 `box-shadow` 的卡片风格
-- **使用**：`border: 1px solid #1E1E1E` 或背景色 `#161616` 来划分区域
+- **使用**：`border: 1px solid #E8E2D9` 或背景色 `#F0EBE3` 来划分区域
 
 ### CSS 变量模板
 
@@ -127,12 +129,12 @@ Google Fonts 引入方式：
 
 ```css
 :root {
-  --bg: #0F0F0F;
-  --bg-subtle: #161616;
-  --text-primary: #E8E4DC;
-  --text-secondary: #6B6560;
-  --accent: #C9A96E;
-  --border: #1E1E1E;
+  --bg: #FAF7F2;
+  --bg-subtle: #F0EBE3;
+  --text-primary: #1A1614;
+  --text-secondary: #8A7F78;
+  --accent: #B5813A;
+  --border: #E8E2D9;
 }
 ```
 
@@ -142,7 +144,7 @@ Google Fonts 引入方式：
 pre, code {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
-  color: #A8B5A2;  /* 柔和绿，不刺眼 */
+  color: #5C4A2A;  /* 深棕，浅色背景下可读 */
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   border-radius: 2px;
 }
