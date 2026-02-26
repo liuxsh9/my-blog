@@ -195,6 +195,7 @@
   <nav class="filters" aria-label="分类筛选">
     <button class="filter-btn filter-btn--all active" data-cat="all">全部</button>
     <button class="filter-btn" data-cat="其他">其他</button>
+        <button class="filter-btn" data-cat="工具评测">工具评测</button>
   </nav>
 
   <main class="post-list" id="post-list">
@@ -212,10 +213,24 @@
         </div>
       </a>
     </article>
+
+    <article class="post-item post-item--right" data-category="工具评测">
+      <a href="posts/2026-02-26-claude-code-agent-teams/" class="post-link">
+        <div class="post-main">
+          <h2 class="post-title">Claude Code Agent Teams：多智能体协作开发实践</h2>
+          <p class="post-desc">Claude Code 实验性功能 Agent Teams 详解：多个 Claude 实例并行协作，共享任务列表，互相通信</p>
+        </div>
+        <div class="post-meta">
+          <span class="post-year">Thu </span>
+          <span class="post-date">eb 26</span>
+          <span class="post-category">工具评测</span>
+        </div>
+      </a>
+    </article>
   </main>
 
   <script>
-    const posts = [{"slug":"2026-02-26-hello-world","title":"Hello World — 这个 Blog 是怎么来的","date":"Thu Feb 26","category":"其他","description":"关于这个归档项目的由来：一个让 Claude Code 持续生产内容、自动部署的静态 blog 系统"}];
+    const posts = [{"slug":"2026-02-26-hello-world","title":"Hello World — 这个 Blog 是怎么来的","date":"Thu Feb 26","category":"其他","description":"关于这个归档项目的由来：一个让 Claude Code 持续生产内容、自动部署的静态 blog 系统"},{"slug":"2026-02-26-claude-code-agent-teams","title":"Claude Code Agent Teams：多智能体协作开发实践","date":"Thu Feb 26","category":"工具评测","description":"Claude Code 实验性功能 Agent Teams 详解：多个 Claude 实例并行协作，共享任务列表，互相通信"}];
     const buttons = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.post-item');
 
